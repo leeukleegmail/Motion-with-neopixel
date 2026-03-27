@@ -11,28 +11,29 @@ If motion is detected again during that time, the 60-second timer is reset.
 - `neopixel_bar.py` - NeoPixel bar control.
 - `boot.py` - Minimal boot script.
 
-## Physical wiring (by board pin labels)
+## Physical wiring (ESP32-S2 Mini pinout image in this project)
 
-This uses the pin labels printed on most ESP32-S2 dev boards (VIN, GND, IO9, IO18).
-If your board uses a different naming style (for example D9/D18), use the equivalent pin.
+The pin map below matches the board in `ESP32-S2FN4R2-S2-Mini-Pinout.jpeg` (USB connector at the bottom).
 
 | Module | Pin | Connect To |
 |---|---|---|
-| RCWL-0516 | VCC | ESP32-S2 VIN / 5V pin |
-| RCWL-0516 | GND | ESP32-S2 GND pin |
-| RCWL-0516 | OUT | ESP32-S2 IO9 pin |
+| RCWL-0516 | VCC | ESP32-S2 VBUS (right header, bottom pin) |
+| RCWL-0516 | GND | ESP32-S2 GND (right header, either of the 2 GND pins) |
+| RCWL-0516 | OUT | ESP32-S2 GPIO9 (left header, 10th pin from top) |
 | NeoPixel Bar (8x WS2812B) | +5V | External regulated 5V supply (+) |
 | NeoPixel Bar (8x WS2812B) | GND | External 5V supply (-) and ESP32-S2 GND |
-| NeoPixel Bar (8x WS2812B) | DIN | ESP32-S2 IO18 pin |
+| NeoPixel Bar (8x WS2812B) | DIN | ESP32-S2 GPIO18 (right header, 10th pin from top) |
 
-### Quick physical lookup on board
+### Exact header positions (from your pinout image)
 
-- VIN / 5V: header pin labeled VIN (or 5V), usually close to USB connector area.
-- GND: any header pin labeled GND (use one near VIN if available).
-- IO9: header pin labeled IO9 (or GPIO9 / D9 depending on board silk).
-- IO18: header pin labeled IO18 (or GPIO18 / D18 depending on board silk).
+- USB at bottom orientation:
+- Left header, 10th pin from top = GPIO9 (RCWL OUT)
+- Right header, 10th pin from top = GPIO18 (NeoPixel DIN)
+- Right header, 13th/14th pins from top = GND
+- Right header, bottom pin = VBUS (5V from USB)
 
 Do not connect NeoPixel +5V to 3V3.
+For 8 LEDs at medium or high brightness, use an external 5V supply for NeoPixel power.
 
 Important:
 - All grounds must be common (ESP32-S2 GND, RCWL GND, LED power GND).
@@ -46,18 +47,18 @@ Important:
 ```text
                +------------------- ESP32-S2 -------------------+
                |                                                 |
-               |  IO9    <---------------- RCWL-0516 OUT         |
-               |  IO18   ----------------> NeoPixel DIN          |
+               |  GPIO9  <---------------- RCWL-0516 OUT         |
+               |  GPIO18 ----------------> NeoPixel DIN          |
                |  GND    -----------------+-------------------+  |
                |                          |                   |  |
-               |  VIN/5V <-------------- RCWL-0516 VCC       |  |
+               |  VBUS   <-------------- RCWL-0516 VCC       |  |
                +--------------------------+-------------------|--+
                                               common ground   |
                                                               |
                    +--------------- RCWL-0516 ---------------+|
                    | VCC ------------------------------ 5V/VIN||
                    | GND ------------------------------ GND   ||
-                   | OUT ------------------------------ IO9   ||
+                   | OUT --------------------------- GPIO9    ||
                    +------------------------------------------+|
                                                                |
                 +------------- External 5V Supply -------------+
@@ -69,7 +70,7 @@ Important:
                                  |      NeoPixel Bar (8x WS2812B)       |
                                  | +5V <----------------------- +5V      |
                                  | GND <----------------------- GND      |
-                                 | DIN <---- IO18 (via 330 ohm)         |
+                                 | DIN <---- GPIO18 (via 330 ohm)       |
                                  +---------------------------------------+
 ```
 
